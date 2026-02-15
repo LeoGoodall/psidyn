@@ -1,0 +1,80 @@
+\section{Experiment 3: Decomposing Arguments}
+
+\subsubsection{Dataset}
+
+We applied semantic information decomposition to the Argument Annotated Essays corpus (AAE-v2; \citealp{stab-gurevych-2017-parsing}), a benchmark dataset for computational argumentation. The corpus comprises 402 persuasive student essays collected from essayforum.com, where students post argumentative writing for feedback while preparing for standardized language tests. Each essay is annotated with argument components---major claims, claims, and premises---and argumentative relations (support or attack) between them.
+
+For our analysis, we focused on claims supported by exactly two premises, creating natural triplets for partial information decomposition: two source texts (premises) and one target text (claim). This structure mirrors the theoretical setup of PID, where we quantify how two sources jointly and individually contribute predictive information about a target.
+
+\subsubsection{Sampling}
+
+We extracted all claims in the corpus that received support relations from exactly two distinct premises. This yielded 325 samples from 228 essays. For each sample, we designated the two supporting premises as sources $X_1$ and $X_2$, and the claim as target $Y$. Text lengths varied across components: claims averaged 88 characters (SD = 37), Premise 1 averaged 114 characters (SD = 52), and Premise 2 averaged 106 characters (SD = 47).
+
+To validate that our PID estimates reflect genuine argumentative structure rather than generic text statistics, we constructed a permutation null model. For each real sample, we randomly paired the claim with two premises drawn from \emph{other} essays, breaking the argumentative relationship while preserving marginal text distributions. We generated five such permutations, yielding 1,625 null samples for comparison.
+
+\subsubsection{Results}
+
+
+\begin{table}[t]
+\centering
+\small
+\caption{Example PID decompositions from the AAE corpus. Each example shows a claim and its two supporting premises, with the resulting information atoms (bits per token). Red.\ = Redundancy; Unq.\ = Unique; Syn.\ = Synergy.}
+\label{tab:aae_examples}
+\begin{tabular}{p{5.8cm}p{4.5cm}ccc}
+\toprule
+Claim & Premises & Unq. & Red. & Syn. \\
+\midrule
+
+\multirow{2}{5.8cm}{\emph{``keeping our pace higher is important''}}
+& \scriptsize P1: avoiding sluggishness increases success probability
+& $-$0.78 & \multirow{2}{*}{0.00} & \multirow{2}{*}{\textbf{2.61}} \\
+& \scriptsize P2: high pace prevents laziness
+& 0.30 &  &  \\
+\midrule
+
+\multirow{2}{5.8cm}{\emph{``it can do good to protect the endangered animals''}}
+& \scriptsize P1: advanced methods to care for animals
+& \textbf{2.08} & \multirow{2}{*}{0.00} & \multirow{2}{*}{0.00} \\
+& \scriptsize P2: agriculture contributes to economy
+& $-$0.20 &  &  \\
+\midrule
+
+\multirow{2}{5.8cm}{\emph{``dancing is important in every culture''}}
+& \scriptsize P1: dancing shows cultural civilization
+& 0.00 & \multirow{2}{*}{\textbf{3.76}} & \multirow{2}{*}{0.88} \\
+& \scriptsize P2: people use dancing to entertain themselves
+& 0.10 &  &  \\
+\midrule
+
+\multirow{2}{5.8cm}{\emph{``society should be educated and became aware of health issues''}}
+& \scriptsize P1: precautions can be taken instead of treatment
+& 0.56 & \multirow{2}{*}{1.93} & \multirow{2}{*}{0.26} \\
+& \scriptsize P2: fewer patients leads to better hospital management
+& 0.00 &  &  \\
+\midrule
+
+\multirow{2}{5.8cm}{\emph{``parents have more time to teach children than anybody else''}}
+& \scriptsize P1: children spend more time with parents
+& 1.35 & \multirow{2}{*}{0.36} & \multirow{2}{*}{\textbf{$-$0.78}} \\
+& \scriptsize P2: parents have more contact and intimacy
+& 0.00 &  &  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/aae_pid_figure.pdf}
+    \caption{PID decomposition of argumentative essays. (A) Distribution of information atoms across 325 premise-claim triplets. Synergy is positive on average, indicating that premises provide super-additive predictive information about claims. (B) Real premise-claim pairings show significantly higher redundancy than shuffled null pairings ($p < .001$), confirming that the decomposition captures genuine argumentative structure.}
+    \label{fig:aae_pid}
+\end{figure}
+
+Table \ref{tab:aae_examples} presents representative examples illustrating the range of PID decompositions observed. The first example shows the highest synergy: two premises addressing distinct aspects of pace---success probability and laziness prevention---that jointly predict a claim about the importance of maintaining high pace. The second example demonstrates maximal unique information: one premise directly discusses animal protection methods while the other (about agriculture and economy) contributes nothing relevant. The third example shows the highest redundancy, where both premises convey culturally-relevant aspects of dancing that overlap in predicting the claim. The final example illustrates negative synergy: two premises that individually predict the claim well (parents spend more time, have more intimacy) but whose predictive contributions overlap substantially.
+
+Synergy was positive on average (M = 0.32, SD = 0.42 bits/token; Figure \ref{fig:aae_pid}A), significantly above zero, $t(324) = 13.90$, $p < .001$, $d = 0.77$, indicating that premises jointly provided more predictive information about claims than the sum of their individual contributions. Redundancy was moderate (M = 0.63, SD = 0.62), reflecting shared predictive content between premises. Unique information was modest and symmetric: Premise 1 contributed M = 0.20 (SD = 0.43) and Premise 2 contributed M = 0.19 (SD = 0.48). Although synergy was positive on average, individual samples showed substantial variability, with some exhibiting negative pointwise synergy. This arises because we compute pointwise mutual information (per-token surprisal differences), which can be negative for individual observations even when the expected value is positive---a well-known property of pointwise information measures \citep{fano1961transmission}.
+
+Critically, real premise-claim pairings showed significantly higher redundancy than shuffled pairings (real: M = 0.63; null: M = 0.12), $t(1948) = 14.62$, $p < .001$, $d = 1.42$ (Figure \ref{fig:aae_pid}B). This large effect confirms that premises supporting the same claim share topically relevant information, whereas random premise pairs lack this coherence. Real pairings also showed lower synergy than null pairings (real: M = 0.32; null: M = 0.51), $t(1948) = -6.82$, $p < .001$, $d = 0.33$, suggesting that random premise combinations can appear more ``complementary'' precisely because they lack shared content. Together, these patterns confirm that the PID decomposition captures genuine argumentative structure rather than generic text statistics.
+
+We also compared the two redundancy functionals. Both MMI and CCS yielded positive synergy (MMI: M = 0.32; CCS: M = 0.15), with highly correlated redundancy estimates ($r = .90$). CCS redundancy (M = 0.46) was lower than MMI redundancy (M = 0.63), with the difference reflecting how each functional partitions the co-information. The consistency of positive synergy across both methods provides converging evidence that premises genuinely contribute super-additive predictive information about claims.
+
+To further validate that the decomposition reflects semantic content, we correlated PID atoms with semantic similarity between premises (computed via sentence embeddings). Redundancy was positively correlated with premise similarity ($r = .23$, $p < .001$): when premises were more similar to each other, they shared more predictive information about the claim, exactly as the theoretical interpretation of redundancy would predict. Synergy showed a marginal negative correlation with premise similarity ($r = -.10$, $p = .06$), consistent with the intuition that similar premises provide overlapping rather than complementary information. Most strikingly, unique information was strongly correlated with premise-claim similarity---premises more semantically related to the claim contributed more unique predictive information (Premise 1: $r = .40$, $p < .001$; Premise 2: $r = .41$, $p < .001$). These correlations confirm that the PID decomposition captures meaningful semantic relationships rather than superficial text statistics.

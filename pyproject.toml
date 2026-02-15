@@ -1,0 +1,92 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "psidyn"
+version = "0.1.0"
+description = "Python Semantic Information Dynamics: Transfer Entropy and Partial Information Decomposition with Large Language Models"
+readme = "README.md"
+license = {text = "AGPL-3.0"}
+requires-python = ">=3.9"
+authors = [
+    {name = "Leonardo Sebastian Goodall"}
+]
+keywords = [
+    "information theory",
+    "partial information decomposition",
+    "transfer entropy",
+    "large language models",
+    "semantic information",
+    "natural language processing",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+
+dependencies = [
+    "torch>=2.0.0",
+    "transformers>=4.30.0",
+    "numpy>=1.21.0",
+    "pandas>=1.3.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+]
+quantization = [
+    "bitsandbytes>=0.41.0",
+    "accelerate>=0.20.0",
+]
+experiments = [
+    "sentence-transformers>=2.2.0",
+    "scipy>=1.7.0",
+    "tqdm>=4.60.0",
+]
+all = [
+    "psidyn[dev,quantization,experiments]",
+]
+
+[project.urls]
+Homepage = "https://github.com/LeoGoodall/psidyn"
+Documentation = "https://github.com/LeoGoodall/psidyn#readme"
+Repository = "https://github.com/LeoGoodall/psidyn"
+Issues = "https://github.com/LeoGoodall/psidyn/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4"]
+ignore = ["E501"]  # Line too long - handled by formatter
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
