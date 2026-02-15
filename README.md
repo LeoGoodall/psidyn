@@ -11,8 +11,6 @@
   <a href="https://www.gnu.org/licenses/agpl-3.0"><img src="https://img.shields.io/badge/License-AGPL%20v3-blue.svg" alt="License: AGPL-3.0"></a>
 </p>
 
-<p align="center"><strong>Python Semantic Information Dynamics</strong></p>
-
 A Python package for computing information-theoretic measures over natural language using LLMs as semantic probability estimators.
 
 ## Overview
