@@ -107,6 +107,15 @@ models/
 *.err
 slurm-*.out
 
+# Manuscript / paper files
+paper.tex
+*.bib
+*.aux
+*.bbl
+*.blg
+*.log
+*.synctex.gz
+
 # Secrets
 .env
 *.key

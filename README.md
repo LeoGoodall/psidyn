@@ -158,33 +158,6 @@ class CoInfo(Trident):
         """Token-weighted co-information over all target posts."""
 ```
 
-Co-information (interaction information) is the inclusion-exclusion alternating sum over all non-empty subsets of sources:
-
-$$CI(X_1; \ldots; X_n; Y) = \sum_{\emptyset \neq S \subseteq \{1,\ldots,n\}} (-1)^{|S|+1}\; I(Y; X_S)$$
-
-- **Positive** co-information → redundancy-dominated (sources overlap)
-- **Negative** co-information → synergy-dominated (sources are complementary)
-
-This requires $2^n$ forward passes (all subsets + baseline), so it scales well for moderate $n$ (e.g. $n \leq 5$).
-
-```python
-from psidyn import CoInfo, Droplet
-
-model = CoInfo(model_name="meta-llama/Llama-3.2-3B")
-
-posts = [
-    Droplet(user_id="p1", timestamp=0, content="First premise"),
-    Droplet(user_id="p2", timestamp=1, content="Second premise"),
-    Droplet(user_id="p3", timestamp=2, content="Third premise"),
-    Droplet(user_id="claim", timestamp=3, content="The claim"),
-]
-
-result = model.compute_pointwise_coinfo(
-    posts, source_users=["p1", "p2", "p3"], target_user="claim", target_post_idx=3
-)
-print(f"Co-information: {result['coinfo_bits_per_token']:.3f}")
-```
-
 ## Requirements
 
 - Python >= 3.9
