@@ -157,7 +157,7 @@ If you use PSIDyn in your research, please cite:
 @software{psidyn,
   author = {Goodall, Leonardo; Luppi, Andrea; Mediano, Pedro},
   title = {PSIDyn: Python Semantic Information Dynamics},
-  year = {2024},
+  year = {2026},
   url = {https://github.com/LeoGoodall/psidyn}
 }
 ```

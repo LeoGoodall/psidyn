@@ -1,5 +1,5 @@
 # PSIDyn: Python Semantic Information Dynamics
-# Copyright (C) 2025 Leonardo Sebastian Goodall
+# Copyright (C) 2026 Leonardo Sebastian Goodall
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
