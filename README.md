@@ -18,7 +18,8 @@ A Python package for computing information-theoretic measures over natural langu
 PSIDyn provides tools for measuring how information flows between text sources using LLMs to estimate semantic probabilities. It implements:
 
 - **Transfer Entropy**: Measure directed information flow between text sequences
-- **Partial Information Decomposition (PID)**: Decompose the information that two sources provide about a target into redundt, uniqu, and synergistic contributions
+- **Partial Information Decomposition (PID)**: Decompose the information that two sources provide about a target into redundant, unique, and synergistic contributions
+- **Co-information**: Compute the redundancy–synergy balance for any number of sources via inclusion-exclusion
 
 ## Installation
 
@@ -87,14 +88,12 @@ The Partial Information Decomposition breaks down joint information I(Y; X1, X2)
 - **Unique X2**: Information only source 2 provides
 - **Synergy**: Information that emerges only when both sources are combined
 
-### Marginalization Methods
+### Marginalisation Methods
 
-PSIDyn supports two methods for computing conditional probabilities:
+PSIDyn supports two methods for computing conditional probabilities for PID:
 
-- `"omit"` (default): Physically remove source text from the sequence
+- `"omit"` (default): Physically remove source text from the sequence (provides true marginal probabilities)
 - `"mask"`: Use attention masking to block information flow
-
-The `"omit"` method provides true marginal probabilities and is recommended for PID.
 
 ### Redundancy Functionals
 
@@ -104,6 +103,20 @@ Two redundancy measures are available:
 - `"ccs"`: Common Change in Surprisal - based on co-information sign matching
 
 ## API Reference
+
+### TransferEntropy
+
+```python
+class TransferEntropy(Trident):
+    def compute_transfer_entropy(
+        self,
+        posts: List[Droplet],
+        source_user: str,
+        target_user: str,
+        lag_window: int,
+    ) -> Dict[str, Any]:
+        """Compute transfer entropy from source to target."""
+```
 
 ### PID
 
@@ -123,18 +136,53 @@ class PID(Trident):
         """Compute pointwise PID for a single target."""
 ```
 
-### TransferEntropy
+### CoInfo
 
 ```python
-class TransferEntropy(Trident):
-    def compute_transfer_entropy(
+class CoInfo(Trident):
+    def compute_pointwise_coinfo(
         self,
         posts: List[Droplet],
-        source_user: str,
+        source_users: List[str],   # any number of sources
         target_user: str,
-        lag_window: int,
-    ) -> Dict[str, Any]:
-        """Compute transfer entropy from source to target."""
+        target_post_idx: int,
+    ) -> Dict[str, float]:
+        """Compute co-information for a single target with n sources."""
+
+    def compute_coinfo(
+        self,
+        posts: List[Droplet],
+        source_users: List[str],
+        target_user: str,
+    ) -> Tuple[Dict[str, float], List[Dict]]:
+        """Token-weighted co-information over all target posts."""
+```
+
+Co-information (interaction information) is the inclusion-exclusion alternating sum over all non-empty subsets of sources:
+
+$$CI(X_1; \ldots; X_n; Y) = \sum_{\emptyset \neq S \subseteq \{1,\ldots,n\}} (-1)^{|S|+1}\; I(Y; X_S)$$
+
+- **Positive** co-information → redundancy-dominated (sources overlap)
+- **Negative** co-information → synergy-dominated (sources are complementary)
+
+This requires $2^n$ forward passes (all subsets + baseline), so it scales well for moderate $n$ (e.g. $n \leq 5$).
+
+```python
+from psidyn import CoInfo, Droplet
+
+model = CoInfo(model_name="meta-llama/Llama-3.2-3B")
+
+posts = [
+    Droplet(user_id="p1", timestamp=0, content="First premise"),
+    Droplet(user_id="p2", timestamp=1, content="Second premise"),
+    Droplet(user_id="p3", timestamp=2, content="Third premise"),
+    Droplet(user_id="claim", timestamp=3, content="The claim"),
+]
+
+result = model.compute_pointwise_coinfo(
+    posts, source_users=["p1", "p2", "p3"], target_user="claim", target_post_idx=3
+)
+print(f"Co-information: {result['coinfo_bits_per_token']:.3f}")
 ```
 
 ## Requirements

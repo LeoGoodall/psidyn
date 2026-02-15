@@ -24,6 +24,7 @@ Main components:
 - Trident: Base class for semantic information dynamics
 - PID: Partial Information Decomposition (redundancy, unique, synergy)
 - TransferEntropy: Semantic transfer entropy between text sources
+- CoInfo: Co-information (interaction information) for n sources
 Example:
     >>> from psidyn import PID, Droplet
     >>> model = PID(model_name="meta-llama/Llama-3.2-3B")
@@ -42,14 +43,16 @@ __version__ = "0.1.0"
 from .trident import Trident, Droplet, ContextMapping
 from .pid import PID, RedundancyMethod, MarginalizationMethod
 from .te import TransferEntropy
+from .coinfo import CoInfo
 
 __all__ = [
     # Version
     "__version__",
     # Core classes
     "Trident",
-    "PID",
     "TransferEntropy",
+    "PID",
+    "CoInfo",
     # Data structures
     "Droplet",
     "ContextMapping",
