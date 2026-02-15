@@ -6,6 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/LeoGoodall/psidyn/actions/workflows/tests.yml"><img src="https://github.com/LeoGoodall/psidyn/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
+  <a href="https://pypi.org/project/psidyn/"><img src="https://img.shields.io/pypi/v/psidyn.svg" alt="PyPI"></a>
   <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.9+-blue.svg" alt="Python 3.9+"></a>
   <a href="https://www.gnu.org/licenses/agpl-3.0"><img src="https://img.shields.io/badge/License-AGPL%20v3-blue.svg" alt="License: AGPL-3.0"></a>
 </p>
