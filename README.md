@@ -2,7 +2,7 @@
   <img src="images/logo.png" alt="PSIDyn Logo" width="300">
 </p>
 
-<h1 align="center">PSIDyn</h1>
+<h1 align="center">Python Semantic Information Dynamics</h1>
 
 <p align="center">
   <a href="https://github.com/LeoGoodall/psidyn/actions/workflows/tests.yml"><img src="https://github.com/LeoGoodall/psidyn/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
